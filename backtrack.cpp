@@ -20,7 +20,6 @@ melhor_obj *escolhe_alunos(std::vector<std::vector<int>> prefs, std::vector<int>
     {
         if (melhor->satisfacao_atual == -1)
         {
-            //std::cout << aluno_projeto.data() << satisfacao_atual;
             melhor->satisfacao_atual = satisfacao_atual;
             melhor->melhor = aluno_projeto;
             std::cerr << "Melhor: " << satisfacao_atual << " ";
@@ -33,8 +32,7 @@ melhor_obj *escolhe_alunos(std::vector<std::vector<int>> prefs, std::vector<int>
 
         if (satisfacao_atual > melhor->satisfacao_atual)
         {
-            //std::cout << aluno_projeto;
-            //std::cout << satisfacao_atual;
+
             melhor->satisfacao_atual = satisfacao_atual;
             melhor->melhor = aluno_projeto;
             std::cerr << "Melhor: " << satisfacao_atual << " ";
@@ -109,9 +107,9 @@ int main(int argc, char const *argv[])
         }
     }
 
-    std::vector<int> vagas(n_projetos, 3); // start with value of 3
+    std::vector<int> vagas(n_projetos, 3);
 
-    std::vector<int> aluno_projeto(n_alunos, -1); // start with value of -1
+    std::vector<int> aluno_projeto(n_alunos, -1);
 
     melhor_obj melhor_result;
 #pragma omp parallel
