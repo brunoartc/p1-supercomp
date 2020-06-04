@@ -1,9 +1,9 @@
 import random
 import numpy as np
 
-n_alunos = 45
-n_proj = 15
-n_escolhas = 3
+n_alunos = 8
+n_proj = 9
+n_escolhas = 4
 
 print(n_alunos, n_proj, n_escolhas)
 
