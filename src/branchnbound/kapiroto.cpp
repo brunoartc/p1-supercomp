@@ -7,7 +7,7 @@ int max_thread=8;
 struct melhor_obj
 {
 
-    int satisfacao_atual = -1;
+    int satisfacao_atual = 0;
     std::vector<int> melhor;
 };
 
@@ -44,29 +44,29 @@ melhor_obj *escolhe_alunos(std::vector<std::vector<int>> prefs, std::vector<int>
         }
         return melhor;
     }
+    int alunos_restantes = aluno_projeto.size() - i;
+    if (satisfacao_atual + alunos_restantes*25 < melhor->satisfacao_atual){
+        std::cerr << "Bound: " << melhor->satisfacao_atual << " " << satisfacao_atual << "\n";
+        return melhor;
 
-    int alunos_restantes = n_alunos - i;
-    if (satisfacao_atual + alunos_restantes*25 >= melhor->satisfacao_atual){
-        for (int proj_atual = 0; proj_atual < n_projetos; proj_atual++)
-            {
-                if (vagas[proj_atual] > 0)
-                {
-                    vagas[proj_atual]--;
-                    aluno_projeto[i] = proj_atual;
-                    
-                    if (i<= max_thread){
-                        #pragma omp task shared(melhor)
-                        escolhe_alunos(prefs, aluno_projeto, vagas, satisfacao_atual + prefs[i][proj_atual], melhor, i + 1, n_alunos, n_projetos);
-                    } else {
-                        escolhe_alunos(prefs, aluno_projeto, vagas, satisfacao_atual + prefs[i][proj_atual], melhor, i + 1, n_alunos, n_projetos);
-                    }
-
-                    
-                    aluno_projeto[i]--;
-                    vagas[proj_atual]++;
-                }
-            }
     }
+    for (int proj_atual = 0; proj_atual < n_projetos; proj_atual++)
+    {
+        if (vagas[proj_atual] > 0)
+        {
+            vagas[proj_atual]--;
+            aluno_projeto[i] = proj_atual;
+            
+            
+            escolhe_alunos(prefs, aluno_projeto, vagas, satisfacao_atual + prefs[i][proj_atual], melhor, i + 1, n_alunos, n_projetos);
+            
+            aluno_projeto[i]--;
+            vagas[proj_atual]++;
+        }
+    }
+
+
+
     
     #pragma omp taskwait
     return melhor;
@@ -101,7 +101,7 @@ int main(int argc, char const *argv[])
         }
         
 
-        for (int j = 0; j < n_choices; j++)
+        for (int j = 0; j < n_choices; j++) // tava preso em 3? n_choices
         {
             prefs[i][prefs_choice[j]] = pow(n_choices - j, 2);
         }
@@ -126,4 +126,3 @@ int main(int argc, char const *argv[])
     std::cout << "\n";
 
 }
-

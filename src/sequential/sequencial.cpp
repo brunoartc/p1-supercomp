@@ -101,7 +101,7 @@ int main(int argc, char const *argv[])
         }
         
 
-        for (int j = 0; j < 3; j++)
+        for (int j = 0; j < n_choices; j++) // tava preso em 3? n_choices
         {
             prefs[i][prefs_choice[j]] = pow(n_choices - j, 2);
         }
@@ -118,7 +118,7 @@ int main(int argc, char const *argv[])
         escolhe_alunos(prefs, aluno_projeto, vagas, 0, &melhor_result, 0, n_alunos, n_projetos);
     }
 
-    std::cout << melhor_result.satisfacao_atual << " " << 1 << "\n";
+    std::cout << melhor_result.satisfacao_atual << " 1" << "\n";
     for (int i = 0; i < melhor_result.melhor.size(); i++)
     {
         std::cout << melhor_result.melhor[i] << " ";
