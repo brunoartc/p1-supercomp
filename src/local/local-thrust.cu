@@ -20,11 +20,10 @@
 struct shuffle
 {
     int n_alunos, total;
-    int* ptr;
     
 
     __host__ __device__
-    shuffle(int _n_alunos, int _total, int* ptr) : n_alunos(_n_alunos), total(_total), ptr(_ptr) {};
+    shuffle(int _n_alunos, int _total) : n_alunos(_n_alunos), total(_total) {};
 
     __host__ __device__
         int operator()(const unsigned int *N) const
@@ -107,13 +106,15 @@ int main(int argc, char const *argv[])
     {
         std::cout << A[i] << "\n";
     }
-    
-    int* dev_ptr = thrust::raw_pointer_cast(d_vec.data());
 
-    thrust::transform(dev_ptr,
-            dev_ptr + N,
-            dev_ptr,
-            shuffle(n_alunos, N, dev_ptr));
+
+    thrust::counting_iterator<unsigned int> index_sequence_begin(0);
+    
+
+    /*thrust::transform(index_sequence_begin,
+            index_sequence_begin + N,
+            d_vec.begin(),
+            shuffle(n_alunos, N));*/
     
     
     
