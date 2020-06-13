@@ -5,24 +5,7 @@
 
 #include <iostream>
 
-struct prg
-{
-    int n_alunos;
-    
 
-    __host__ __device__
-    prg(int _n_alunos) : n_alunos(_n_alunos) {};
-
-    __host__ __device__
-        int operator()(const unsigned int n) const
-        {
-            thrust::default_random_engine rng;
-            thrust::uniform_int_distribution<int> dist(0, 20);
-            rng.discard(n);
-
-            return dist(rng);
-        }
-};
 
 
 int main(void)

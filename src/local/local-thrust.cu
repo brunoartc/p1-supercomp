@@ -16,39 +16,81 @@
 #include <thrust/transform.h>
 #include <thrust/iterator/counting_iterator.h>
 
-
+/*
 struct shuffle
 {
     int n_alunos, total;
-    
+    int* ptr;
+    thrust::uniform_int_distribution<int> dist;
 
     __host__ __device__
-    shuffle(int _n_alunos, int _total) : n_alunos(_n_alunos), total(_total) {};
+    shuffle(int _n_alunos, int _total, int* _ptr,  thrust::uniform_int_distribution<int> _dist) : n_alunos(_n_alunos), total(_total), ptr(_ptr), dist(_dist){};
 
     __host__ __device__
-        int operator()(const unsigned int *N) const
+        thrust::uniform_int_distribution<int> dist;
+        int operator()(const unsigned int N) const
         {
-            for (int i = 0; i < total/n_alunos; i++)
-            {
-                thrust::minstd_rand rng;
-                
-                for (int j = 0; i < n_alunos; i++)
-                {
-                    thrust::uniform_int_distribution<int> dist(0, 20);
-                    rng.discard(i);
-                    ptr[i*j] = ptr[i*dist(i)];
-                }
-                
+            thrust::default_random_engine rng(N);
                 
 
+            int random;
+            random = dist(rng);
+            //rng.discard(N);
+            const int index = (((int) N/n_alunos) * n_alunos);
 
-            }
+
+            int temp = ptr[index];
+            //ptr[index] = ptr[N];
+            //ptr[N] = 2;
+
+
+
+            return index;//return temp;//return ptr[dist(rng)/n_alunos];//return dist(rng);//ptr[dist(rng)/n_alunos];
             
             
         }
 };
 
+ //old gold*/
 
+
+ struct shuffle{
+    int n_alunos;
+    int total;
+    int *ptr;
+    
+    int seed;
+    thrust::uniform_int_distribution<int> dist;
+    
+    shuffle ( int _n_alunos, int _total, int *_ptr,
+                    thrust::uniform_int_distribution<int> dist) :
+                                                                  n_alunos(_n_alunos),
+                                                                  total(_total),
+                                                                  ptr(_ptr),
+                                                                  dist(dist){};
+
+    __device__ __host__
+    int operator()(const int &i) {
+        thrust::default_random_engine rgn(i);
+        /*rgn.discard(i);
+        int randommm;
+        randommm = dist(rgn);
+        const int index = ( i * n_alunos) + randommm;// * n_alunos) + randommm;
+        int old = ptr[index];
+        ptr[index] = ptr[i];
+        ptr[i] = old;*/   //old
+
+
+        for(int j=0; j < n_alunos; j++){
+            int randommm = dist(rgn);
+            int old = ptr[j+i*n_alunos];
+            ptr[j+i*n_alunos] = ptr[randommm+i*n_alunos]; //faz trocas no aluno projeto aleatoriamente
+            ptr[randommm+i*n_alunos] = old;
+        }
+
+        //return index;
+    }
+};
 
 
 
@@ -93,16 +135,22 @@ int main(int argc, char const *argv[])
     }
 
     std::vector<int> vagas(n_projetos, n_choices); // start with value of n_choices
-    const int N = n_alunos * 200000;
+    const int inters = 200000;
+    const int N = n_alunos * inters;
     thrust::host_vector<int> A(N);   
+
+    thrust::host_vector<int> santax(N);
+
+    thrust::device_vector<int> satis(N);
 
     
     thrust::tabulate(A.begin(), A.end(), make_init(n_projetos));
 
 
     thrust::device_vector<int> d_vec = A;
-
-    for (int i = 0; i < 10; i++)
+    thrust::device_vector<int> st = A;
+    int initila = 0;
+    for (int i = initila; i < initila +9; i++)
     {
         std::cout << A[i] << "\n";
     }
@@ -111,13 +159,24 @@ int main(int argc, char const *argv[])
     thrust::counting_iterator<unsigned int> index_sequence_begin(0);
     
 
-    /*thrust::transform(index_sequence_begin,
-            index_sequence_begin + N,
-            d_vec.begin(),
-            shuffle(n_alunos, N));*/
+    int* dv_ptr = thrust::raw_pointer_cast(d_vec.data());
+
+
+    thrust::uniform_int_distribution<int> dist(0,n_projetos - 1);
+
+
+    thrust::transform(index_sequence_begin,
+            index_sequence_begin + inters,
+            satis.begin(),
+            shuffle(n_alunos, N, dv_ptr, dist));
+
+
+    thrust::copy(d_vec.begin(), d_vec.end(), santax.begin());
     
-    
-    
+    for (int i = initila; i < initila +9; i++)
+    {
+        std::cout << "i:" << i<<" <-> " << santax[i] << "\n";
+    }
 
     
 }
