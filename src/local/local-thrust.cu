@@ -125,7 +125,9 @@ int main(int argc, char const *argv[])
     std::cin >> n_projetos;
     std::cin >> n_choices;
 
-    thrust::host_vector<int> prefs(n_alunos*n_choices);
+    //std::cout << n_projetos << "AAAAAAAAAAA";
+
+    thrust::host_vector<int> prefs(n_alunos*n_projetos);
 
     for (int i = 0; i < n_alunos; i++)
     {
@@ -141,7 +143,9 @@ int main(int argc, char const *argv[])
 
         for (int j = 0; j < n_choices; j++)
         {
-            prefs[i + prefs_choice[j]] = pow(n_choices - j, 2);
+            int intex = (i * n_alunos + prefs_choice[j]); //+ //prefs_choice[j];
+            //std::cout << intex << " " << prefs.size() <<std::endl;
+            prefs[intex] = pow(n_choices - j, 2);
         }
     }
     
@@ -164,10 +168,10 @@ int main(int argc, char const *argv[])
     thrust::device_vector<int> d_vec = A;
     thrust::device_vector<int> st = A;
     int initila = 0;
-    /*for (int i = initila; i < initila +9; i++)
-    {
-        std::cout << A[i] << "\n";
-    }*/
+    //for (int i = initila; i < initila +9; i++)
+    //{
+    //    std::cout << A[i] << "\n";
+    //}
 
 
     thrust::counting_iterator<unsigned int> index_sequence_begin(0);
