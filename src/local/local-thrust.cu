@@ -15,6 +15,9 @@
 #include <thrust/device_vector.h>
 #include <thrust/transform.h>
 #include <thrust/iterator/counting_iterator.h>
+#include <thrust/extrema.h>
+
+
 
 /*
 struct shuffle
@@ -58,16 +61,18 @@ struct shuffle
     int n_alunos;
     int total;
     int *ptr;
+    int *prefs;
     
     int seed;
     thrust::uniform_int_distribution<int> dist;
     
     shuffle ( int _n_alunos, int _total, int *_ptr,
-                    thrust::uniform_int_distribution<int> dist) :
+                    thrust::uniform_int_distribution<int> dist, int *_prefs) :
                                                                   n_alunos(_n_alunos),
                                                                   total(_total),
                                                                   ptr(_ptr),
-                                                                  dist(dist){};
+                                                                  dist(dist),
+                                                                  prefs(_prefs){};
 
     __device__ __host__
     int operator()(const int &i) {
@@ -87,10 +92,16 @@ struct shuffle
             ptr[j+i*n_alunos] = ptr[randommm+i*n_alunos]; //faz trocas no aluno projeto aleatoriamente
             ptr[randommm+i*n_alunos] = old;
         }
+        int ful_sat = 0;
+        for(int j=0; j < n_alunos; j++){
+            ful_sat += prefs[j+i*n_alunos + ptr[j+i*n_alunos]];
+        }
 
-        //return index;
+        return ful_sat;
     }
 };
+
+
 
 
 
@@ -100,6 +111,8 @@ struct make_init : public thrust::unary_function<int,int>
   make_init(int a) : _a(a) {}
   int operator()(int i) const { return i % this->_a; }
 };
+
+
 
 
 int main(int argc, char const *argv[])
@@ -112,9 +125,7 @@ int main(int argc, char const *argv[])
     std::cin >> n_projetos;
     std::cin >> n_choices;
 
-    std::vector<std::vector<int>> prefs(n_alunos);
-    for (int i = 0; i < n_alunos; i++)
-        prefs[i].resize(n_projetos);
+    thrust::host_vector<int> prefs(n_alunos*n_choices);
 
     for (int i = 0; i < n_alunos; i++)
     {
@@ -130,9 +141,11 @@ int main(int argc, char const *argv[])
 
         for (int j = 0; j < n_choices; j++)
         {
-            prefs[i][prefs_choice[j]] = pow(n_choices - j, 2);
+            prefs[i + prefs_choice[j]] = pow(n_choices - j, 2);
         }
     }
+    
+    thrust::device_vector<int> dprefs = prefs;
 
     std::vector<int> vagas(n_projetos, n_choices); // start with value of n_choices
     const int inters = 200000;
@@ -140,6 +153,7 @@ int main(int argc, char const *argv[])
     thrust::host_vector<int> A(N);   
 
     thrust::host_vector<int> santax(N);
+    thrust::host_vector<int> santax2(N);
 
     thrust::device_vector<int> satis(N);
 
@@ -150,16 +164,17 @@ int main(int argc, char const *argv[])
     thrust::device_vector<int> d_vec = A;
     thrust::device_vector<int> st = A;
     int initila = 0;
-    for (int i = initila; i < initila +9; i++)
+    /*for (int i = initila; i < initila +9; i++)
     {
         std::cout << A[i] << "\n";
-    }
+    }*/
 
 
     thrust::counting_iterator<unsigned int> index_sequence_begin(0);
     
 
     int* dv_ptr = thrust::raw_pointer_cast(d_vec.data());
+    int* dv_prefs_ptr = thrust::raw_pointer_cast(d_vec.data());
 
 
     thrust::uniform_int_distribution<int> dist(0,n_projetos - 1);
@@ -168,15 +183,33 @@ int main(int argc, char const *argv[])
     thrust::transform(index_sequence_begin,
             index_sequence_begin + inters,
             satis.begin(),
-            shuffle(n_alunos, N, dv_ptr, dist));
+            shuffle(n_alunos, N, dv_ptr, dist, dv_prefs_ptr));
 
 
-    thrust::copy(d_vec.begin(), d_vec.end(), santax.begin());
     
-    for (int i = initila; i < initila +9; i++)
+
+    
+
+    thrust::copy(satis.begin(), satis.end(), santax.begin());
+
+    thrust::copy(d_vec.begin(), d_vec.end(), santax2.begin());
+    
+    int* vec = santax.data();
+
+    int indexx  = std::distance(vec, std::max_element(vec, vec + N));
+
+
+    std::cout << vec[indexx] << " 1" << "\n";
+    for (int i = 0; i < n_alunos-1; i++)
     {
-        std::cout << "i:" << i<<" <-> " << santax[i] << "\n";
+        std::cout << santax2[indexx*n_alunos + i] << " ";
     }
+    std::cout << santax2[indexx*n_alunos + n_alunos];
+
+    /*for (int i = initila; i < initila +9; i++)
+    {
+        std::cout << "i:" << i<<" <-> " << santax[i] << " " << max << "\n";
+    }*/
 
     
 }
