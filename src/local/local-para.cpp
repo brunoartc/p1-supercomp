@@ -33,6 +33,46 @@ melhor_obj escolhe_alunos(std::vector<std::vector<int>> prefs, std::vector<int> 
     return melhor;
 }
 
+melhor_obj local(std::vector<std::vector <int> > prefs, std::vector<int> aluno_projeto, std::vector<int> vagas, melhor_obj best, int satisfacao_atual=0, int i=0){
+    int soma = 0;
+    for(int p = 0; p < prefs.size(); p++){
+        soma += prefs[p][aluno_projeto[p]];
+    }
+    
+    best.satisfacao_atual = soma;
+    melhor_obj nova_solucao;
+    for (int j=0; j<prefs.size(); j++){
+        nova_solucao.melhor.push_back(aluno_projeto[j]); 
+        best.melhor[j] = (aluno_projeto[j]); 
+    }
+    
+    for(int p = 0; p < best.melhor.size(); p++){
+        for (int k = 0; k < best.melhor.size(); k++){
+            if (k != p){
+                nova_solucao.melhor[p] = best.melhor[k];
+                nova_solucao.melhor[k] = best.melhor[p];
+                nova_solucao.satisfacao_atual = 0;
+                for(int i = 0; i < best.melhor.size(); i++){
+                    nova_solucao.satisfacao_atual += prefs[i][nova_solucao.melhor[i]];
+                }
+                if (best.satisfacao_atual < nova_solucao.satisfacao_atual){
+                    for (int j=0; j<nova_solucao.melhor.size(); j++){
+                        best.melhor[j] = nova_solucao.melhor[j]; 
+                    }
+                    best.satisfacao_atual = nova_solucao.satisfacao_atual;
+                    k = 0;
+                    p = 0;
+                }
+                else {
+                    nova_solucao.melhor[p] = best.melhor[p];
+                    nova_solucao.melhor[k] = best.melhor[k];
+                }
+            }
+        } 
+    }
+    return best;
+}
+
 melhor_obj escolhe_alunos_master(std::vector<std::vector<int>> prefs, std::vector<int> aluno_projeto, std::vector<int> vagas, int satisfacao_atual, melhor_obj melhor, int i, int n_alunos, int n_projetos)
 {
 }
@@ -106,30 +146,15 @@ int main(int argc, char const *argv[])
 
     std::vector<int> vagas(n_projetos, 3); // start with value of n_choices
 
-    std::vector<int> aluno_projeto(n_alunos, -1); // start with value of -1 nao ASSIM EH ERRADO
+    std::vector<int> aluno_projeto; // start with value of -1 nao ASSIM EH ERRADO
 
 
-    int i = 0;
-    int f = 0;
-    while (i < n_alunos)
-    {
-        f=0;
-        int k = 0;
-        while (f < vagas[k])
-        {
-            // projeto i
-            aluno_projeto[i] = f;
-            i++;
-
-            f++;
+    for (int i = 0; i < n_projetos; i++) {
+        for (int j = 0; j < 3; j++){
+            aluno_projeto.push_back(i);
         }
-        k++;
     }
 
-    for (int i = 0; i < n_alunos; i++)
-    {
-        //std::cout << aluno_projeto[i];
-    }
     int iters = 0;
     if(getenv("ITER")) {
     iters = atoi(getenv("ITER"));
@@ -141,54 +166,38 @@ int main(int argc, char const *argv[])
     int maior = 0;
     std::vector<int> aln_proj;
     std::vector<int> aluno_projet = aluno_projeto;
+
+    melhor_obj melhor_global;
+    melhor_global.satisfacao_atual = 0;
+    melhor_global.melhor = aluno_projet;
+    std::vector<int> vagas_g(vagas);
     //srand(time(NULL));
     #pragma omp parallel for
     for (int i = 0; i < iters; i++)
     {
-        //std::cout << i;
-        
-        
-        std::vector<int> vagas_g(vagas);
 
-        //random_alunos_dist_full(aluno_projet, vagas_g);
-        random_alunos_dist(aluno_projet, vagas_g);
-
-        std::cerr << "Inicial: " << maior << " ";
-        for (int i = 0; i < aluno_projet.size()-1; i++)
-        {
-            std::cerr << aluno_projet[i] << " ";
+        //random_alunos_dist(aluno_projet, vagas_g);
+        melhor_obj current_best;
+        current_best = local(prefs, aluno_projet, vagas, melhor_global);
+        int agora = current_best.satisfacao_atual;
+        melhor_obj atual_obj;
+        std::random_shuffle ( aluno_projet.begin(), aluno_projet.end() );
+        atual_obj = local(prefs, aluno_projet, vagas, melhor_global);
+        if (atual_obj.satisfacao_atual > melhor_global.satisfacao_atual){
+            //#pragma critical
+            melhor_global.satisfacao_atual = atual_obj.satisfacao_atual;
+            std::vector<int> new_(atual_obj.melhor);
+            melhor_global.melhor = new_;
         }
-        std::cerr << aluno_projet[aluno_projet.size()] << "\n";
-        
-
-        int agora = 0;
-        for (int i = 0; i < n_alunos; i++)
-        {
-            agora += prefs[i][aluno_projet[i]];
-            
-        }
-        if (agora > maior){
-                #pragma critical
-                maior = agora;
-                #pragma critical
-                aln_proj = aluno_projet;
-                std::cerr << "Iter: " << maior << " ";
-                for (int i = 0; i < aluno_projet.size()-1; i++)
-                {
-                    std::cerr << aluno_projet[i] << " ";
-                }
-                std::cerr << aluno_projet[aluno_projet.size()] << "\n";
-            }
 
     }
     
 
-   std::cout << maior << " 1" << "\n";
-    for (int i = 0; i < aln_proj.size()-1; i++)
-    {
-        std::cout << aln_proj[i] << " ";
+   std::cout << melhor_global.satisfacao_atual  << " 1" << "\n";
+    for (int i = 0; i < melhor_global.melhor.size(); i++){
+        std::cout << melhor_global.melhor[i] << " ";
     }
-    std::cout << aln_proj[aln_proj.size()];
+    std::cout << "\n";
 
     
 }
