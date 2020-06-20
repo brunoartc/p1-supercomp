@@ -176,6 +176,7 @@ int main(int argc, char const *argv[])
     melhor_global.melhor = aluno_projet;
     std::vector<int> vagas_g(vagas);
     //srand(time(NULL));
+    auto rng = std::default_random_engine {};
     #pragma omp parallel for
     for (int i = 0; i < iters; i++)
     {
@@ -184,11 +185,11 @@ int main(int argc, char const *argv[])
         melhor_obj current_best;
         //random_alunos_dist(aluno_projet, vagas_g);
         
+        
         current_best = local(prefs, aluno_projet, vagas, melhor_global);
         int agora = current_best.satisfacao_atual;
         melhor_obj atual_obj;
-        std::random_shuffle ( aluno_projet.begin(), aluno_projet.end());
-        
+        std::shuffle ( aluno_projet.begin(), aluno_projet.end() , rng);
         atual_obj = local(prefs, aluno_projet, vagas, melhor_global);
         if (atual_obj.satisfacao_atual > melhor_global.satisfacao_atual){
             //#pragma critical

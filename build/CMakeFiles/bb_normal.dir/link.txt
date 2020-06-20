@@ -1,1 +1,0 @@
-/usr/bin/c++     CMakeFiles/bb_normal.dir/src/branchnbound/novo-bb.cpp.o  -o bb_normal 

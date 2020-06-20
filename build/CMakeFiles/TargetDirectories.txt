@@ -1,8 +1,0 @@
-/home/bruno/Documents/p1-supercomp/build/CMakeFiles/rebuild_cache.dir
-/home/bruno/Documents/p1-supercomp/build/CMakeFiles/bb_normal.dir
-/home/bruno/Documents/p1-supercomp/build/CMakeFiles/sequencial_paralelo.dir
-/home/bruno/Documents/p1-supercomp/build/CMakeFiles/edit_cache.dir
-/home/bruno/Documents/p1-supercomp/build/CMakeFiles/local_paralelo.dir
-/home/bruno/Documents/p1-supercomp/build/CMakeFiles/local_normal.dir
-/home/bruno/Documents/p1-supercomp/build/CMakeFiles/sequencial_normal.dir
-/home/bruno/Documents/p1-supercomp/build/CMakeFiles/local_gpu.dir
