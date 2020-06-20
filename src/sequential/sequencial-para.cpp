@@ -13,8 +13,9 @@ struct melhor_obj
 
 
 
-melhor_obj *escolhe_alunos(std::vector<std::vector<int>> prefs, std::vector<int> aluno_projeto, std::vector<int> vagas, int satisfacao_atual, melhor_obj *melhor, int i, int n_alunos, int n_projetos)
+melhor_obj *escolhe_alunos(std::vector<std::vector<int>>* prefs, std::vector<int> aluno_projeto, std::vector<int> vagas, int satisfacao_atual, melhor_obj *melhor, int i, int n_alunos, int n_projetos)
 {
+
 
     if (i == n_alunos)
     {
@@ -44,9 +45,9 @@ melhor_obj *escolhe_alunos(std::vector<std::vector<int>> prefs, std::vector<int>
             
             if (i<= max_thread){
                 #pragma omp task shared(melhor)
-                escolhe_alunos(prefs, aluno_projeto, vagas, satisfacao_atual + prefs[i][proj_atual], melhor, i + 1, n_alunos, n_projetos);
+                escolhe_alunos(prefs, aluno_projeto, vagas, satisfacao_atual + (*prefs)[i][proj_atual], melhor, i + 1, n_alunos, n_projetos);
             } else {
-                escolhe_alunos(prefs, aluno_projeto, vagas, satisfacao_atual + prefs[i][proj_atual], melhor, i + 1, n_alunos, n_projetos);
+                escolhe_alunos(prefs, aluno_projeto, vagas, satisfacao_atual + (*prefs)[i][proj_atual], melhor, i + 1, n_alunos, n_projetos);
             }
 
             
@@ -105,7 +106,7 @@ int main(int argc, char const *argv[])
 #pragma omp parallel
     {
 #pragma omp master
-        escolhe_alunos(prefs, aluno_projeto, vagas, 0, &melhor_result, 0, n_alunos, n_projetos);
+        escolhe_alunos(&prefs, aluno_projeto, vagas, 0, &melhor_result, 0, n_alunos, n_projetos);
     }
 
     std::cout << melhor_result.satisfacao_atual << " 1" << "\n";
