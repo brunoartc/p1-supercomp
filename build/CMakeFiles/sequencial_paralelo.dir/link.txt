@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/sequencial_paralelo.dir/src/sequential/sequencial-para.cpp.o  -o sequencial_paralelo /usr/lib/gcc/x86_64-linux-gnu/7/libgomp.so -lpthread 

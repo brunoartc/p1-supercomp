@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/local_gpu.dir/src/local/local_gpu_generated_local-thrust.cu.o  -o local_gpu /usr/lib/x86_64-linux-gnu/libcudart_static.a -lpthread -ldl /usr/lib/x86_64-linux-gnu/librt.so 

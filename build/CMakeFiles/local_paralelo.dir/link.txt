@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/local_paralelo.dir/src/local/local-para.cpp.o  -o local_paralelo /usr/lib/gcc/x86_64-linux-gnu/7/libgomp.so -lpthread 

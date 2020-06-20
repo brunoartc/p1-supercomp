@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/bruno/Documents/p1-supercomp/src/local/local-para.cpp
+iostream
+-
+math.h
+-
+vector
+-
+random
+-
+array
+-
+iostream
+-
+algorithm
+-
+chrono
+-
+

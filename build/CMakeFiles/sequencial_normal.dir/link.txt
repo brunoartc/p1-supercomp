@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/sequencial_normal.dir/src/sequential/sequencial.cpp.o  -o sequencial_normal 

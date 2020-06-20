@@ -1,0 +1,216 @@
+# Nmap 7.60 scan initiated Thu Jun 18 10:15:03 2020 as: nmap -sV -A -O -T4 --script=vulscan/vulscan.nse -o o -Pn 192.168.0.28
+Nmap scan report for 192.168.0.28
+Host is up (0.0024s latency).
+Not shown: 999 closed ports
+PORT   STATE SERVICE VERSION
+25/tcp open  smtp    Postfix smtpd
+| vulscan: VulDB - https://vuldb.com:
+| [154351] Postfix 2.10.1-7 sender_login Homoglyph spoofing
+| [146116] PostfixAdmin 2.3.4 templates/menu.php cross site scripting
+| [108975] Apple macOS up to 10.13.1 Postfix unknown vulnerability
+| [98314] PostfixAdmin up to 3.0.1 AliasHandler delete.php gen_show_status denial of service
+| [71720] Postfix up to 2.3.0 backup.php pacrypt sql injection
+| [12746] Postfix Admin 2.3.6 functions.inc.php sql injection
+| [57422] Postfix memory corruption
+| [56843] Postfix up to 2.7.2 Cleartext weak encryption
+| 
+| MITRE CVE - https://cve.mitre.org:
+| [CVE-2013-2852] Format string vulnerability in the b43_request_firmware function in drivers/net/wireless/b43/main.c in the Broadcom B43 wireless driver in the Linux kernel through 3.9.4 allows local users to gain privileges by leveraging root access and including format string specifiers in an fwpostfix modprobe parameter, leading to improper construction of an error message.
+| [CVE-2011-1720] The SMTP server in Postfix before 2.5.13, 2.6.x before 2.6.10, 2.7.x before 2.7.4, and 2.8.x before 2.8.3, when certain Cyrus SASL authentication methods are enabled, does not create a new server handle after client authentication fails, which allows remote attackers to cause a denial of service (heap memory corruption and daemon crash) or possibly execute arbitrary code via an invalid AUTH command with one method followed by an AUTH command with a different method.
+| [CVE-2011-0411] The STARTTLS implementation in Postfix 2.4.x before 2.4.16, 2.5.x before 2.5.12, 2.6.x before 2.6.9, and 2.7.x before 2.7.3 does not properly restrict I/O buffering, which allows man-in-the-middle attackers to insert commands into encrypted SMTP sessions by sending a cleartext command that is processed after TLS is in place, related to a "plaintext command injection" attack.
+| [CVE-2010-0230] SUSE Linux Enterprise 10 SP3 (SLE10-SP3) and openSUSE 11.2 configures postfix to listen on all network interfaces, which might allow remote attackers to bypass intended access restrictions.
+| [CVE-2009-2939] The postfix.postinst script in the Debian GNU/Linux and Ubuntu postfix 2.5.5 package grants the postfix user write access to /var/spool/postfix/pid, which might allow local users to conduct symlink attacks that overwrite arbitrary files.
+| [CVE-2008-4977] ** DISPUTED **  postfix_groups.pl in Postfix 2.5.2 allows local users to overwrite arbitrary files via a symlink attack on the (1) /tmp/postfix_groups.stdout, (2) /tmp/postfix_groups.stderr, and (3) /tmp/postfix_groups.message temporary files.  NOTE: the vendor disputes this vulnerability, stating "This is not a real issue ... users would have to edit a script under /usr/lib to enable it."
+| [CVE-2008-3889] Postfix 2.4 before 2.4.9, 2.5 before 2.5.5, and 2.6 before 2.6-20080902, when used with the Linux 2.6 kernel, leaks epoll file descriptors during execution of "non-Postfix" commands, which allows local users to cause a denial of service (application slowdown or exit) via a crafted command, as demonstrated by a command in a .forward file.
+| [CVE-2008-3646] The Postfix configuration file in Mac OS X 10.5.5 causes Postfix to be network-accessible when mail is sent from a local command-line tool, which allows remote attackers to send mail to local Mac OS X users.
+| [CVE-2008-2937] Postfix 2.5 before 2.5.4 and 2.6 before 2.6-20080814 delivers to a mailbox file even when this file is not owned by the recipient, which allows local users to read e-mail messages by creating a mailbox file corresponding to another user's account name.
+| [CVE-2008-2936] Postfix before 2.3.15, 2.4 before 2.4.8, 2.5 before 2.5.4, and 2.6 before 2.6-20080814, when the operating system supports hard links to symlinks, allows local users to append e-mail messages to a file to which a root-owned symlink points, by creating a hard link to this symlink and then sending a message.  NOTE: this can be leveraged to gain privileges if there is a symlink to an init script.
+| [CVE-2007-3791] Buffer overflow in the w_read function in sockets.c in Cami Sardinha and Nigel Kukard policyd before 1.81 for Postfix allows remote attackers to cause a denial of service and possibly execute arbitrary code via long SMTP commands.  NOTE: some of these details are obtained from third party information.
+| [CVE-2006-0213] Kolab Server 2.0.1, 2.0.2 and development versions pre-2.1-20051215 and earlier, when authenticating users via secure SMTP, stores authentication credentials in plaintext in the postfix.log file, which allows local users to gain privileges.
+| [CVE-2005-1127] Format string vulnerability in the log function in Net::Server 0.87 and earlier, as used in Postfix Greylisting Policy Server (Postgrey) 1.18 and earlier, and possibly other products, allows remote attackers to cause a denial of service (crash) via format string specifiers that are not properly handled before being sent to syslog, as demonstrated using sender addresses to Postgrey.
+| [CVE-2005-0337] Postfix 2.1.3, when /proc/net/if_inet6 is not available and permit_mx_backup is enabled in smtpd_recipient_restrictions, allows remote attackers to bypass e-mail restrictions and perform mail relaying by sending mail to an IPv6 hostname.
+| [CVE-2004-1113] SQL injection vulnerability in SQLgrey Postfix greylisting service before 1.2.0 allows remote attackers to execute arbitrary SQL commands via the (1) sender or (2) recipient e-mail addresses.
+| [CVE-2004-1088] Postfix server for Apple Mac OS X 10.3.6, when using CRAM-MD5, allows remote attackers to send mail without authentication by replaying authentication information.
+| [CVE-2004-0925] Postfix on Mac OS X 10.3.x through 10.3.5, with SMTPD AUTH enabled, does not properly clear the username between authentication attempts, which allows users with the longest username to prevent other valid users from being able to authenticate.
+| [CVE-2003-0540] The address parser code in Postfix 1.1.12 and earlier allows remote attackers to cause a denial of service (lock) via (1) a malformed envelope address to a local host that would generate a bounce and contains the ".!" string in the MAIL FROM or Errors-To headers, which causes nqmgr to lock up, or (2) via a valid MAIL FROM with a RCPT TO containing a ".!" string, which causes an instance of the SMTP listener to lock up.
+| [CVE-2003-0468] Postfix 1.1.11 and earlier allows remote attackers to use Postfix to conduct "bounce scans" or DDos attacks of other hosts via an email address to the local host containing the target IP address and service name followed by a "!" string, which causes Postfix to attempt to use SMTP to communicate with the target on the associated port.
+| [CVE-2001-0894] Vulnerability in Postfix SMTP server before 20010228-pl07, when configured to email the postmaster when SMTP errors cause the session to terminate, allows remote attackers to cause a denial of service (memory exhaustion) by generating a large number of SMTP errors, which forces the SMTP session log to grow too large.
+| 
+| SecurityFocus - https://www.securityfocus.com/bid/:
+| [96142] PostfixAdmin CVE-2017-5930 Session Management Security Bypass Vulnerability
+| [90814] Postfix Admin Multiple Cross Site Request Forgery Vulnerabilities
+| [67250] Postfix Arbitrary Content Security Bypass Vulnerability
+| [66455] Postfix Admin 'functions.inc.php' SQL Injection Vulnerability
+| [65184] Fail2ban Postfix Filter Remote Denial of Service Vulnerability
+| [51680] Postfix Admin Multiple SQL Injection and Cross Site Scripting Vulnerabilities
+| [47778] Postfix SMTP Server Cyrus SASL Support Memory Corruption Vulnerability
+| [36469] Debian and Ubuntu Postfix Insecure Temporary File Creation Vulnerability
+| [31721] Apple Mac OS X 10.5 Postfix Security Bypass Vulnerability
+| [30977] Postfix 'epoll' Linux Event Handler Local Denial of Service Vulnerability
+| [30691] Postfix Local Information Disclosure and Local Privilege Escalation Vulnerabilities
+| [13133] Salim Gasmi GLD Postfix Greylisting Daemon Format String Vulnerability
+| [13129] Salim Gasmi GLD Postfix Greylisting Daemon Buffer Overflow Vulnerability
+| [12445] Postfix IPv6 Unauthorized Mail Relay Vulnerability
+| [11898] SQLgrey Postfix Greylisting Service Unspecified SQL Injection Vulnerability
+| [11633] SQLgrey Postfix Greylisting Service SQL Injection Vulnerability
+| [11323] Apple Mac OS X Postfix Release SMTPD AUTH Username Denial Of Service Vulnerability
+| [8362] Postfix SMTP Malformed E-mail Envelope Address Denial of Service Vulnerability
+| [8361] Postfix Connection Proxying Vulnerability
+| [8333] Multiple Postfix Denial of Service Vulnerabilities
+| [3638] SuSEConfig.postfix chroot Local DoS Attack Vulnerability
+| [3637] SuSEConfig.postfix chroot File Ownership Vulnerability
+| [3544] Postfix SMTP Log Denial Of Service Vulnerability
+| [1428] cyrus With postfix and Procmail Remote Shell Expansion Vulnerabilities
+| 
+| IBM X-Force - https://exchange.xforce.ibmcloud.com:
+| [72752] Postfix Admin multiple parameters SQL injection
+| [72751] PostfixAdmin multiple parameters cross-site scripting
+| [67359] Postfix Cyrus SASL library in the SMTP server code execution
+| [55970] SUSE Linux Enterprise postfix security bypass
+| [53425] Postfix in Debian and Ubuntu pid symlink
+| [45876] Apple Mac OS X Postfix configuration file weak security
+| [44865] Postfix file descriptor denial of service
+| [44461] Postfix email information disclosure
+| [44460] Postfix symlink code execution
+| [22655] RHSA-2005:152 updates for postfix not installed
+| [19218] Postfix IPv6 mail relay
+| [18435] SQLgrey Postfix greylisting service SQL injection
+| [18353] Postfix CRAM-MD5 authentication replay attack
+| [17998] SQLgrey Postfix greylisting service SQL injection
+| [17595] Apple Mac OS postfix SMTPD AUTH denial of service
+| [12816] Postfix MAIL FROM or RCPT TO denial of service
+| [12815] Postfix could be used as a distributed denial of service tool
+| [7568] Postfix SMTP log denial of service
+| [4905] Cyrus with postfix and procmail integration could allow remote command execution
+| 
+| Exploit-DB - https://www.exploit-db.com:
+| [25392] Salim Gasmi GLD 1.x Postfix Greylisting Daemon Buffer Overflow Vulnerability
+| [22982] Postfix 1.1.x Denial of Service Vulnerabilities (2)
+| [22981] Postfix 1.1.x Denial of Service Vulnerabilities (1)
+| [16841] GLD (Greylisting Daemon) Postfix Buffer Overflow
+| [10023] Salim Gasmi GLD 1.0 - 1.4 Postfix Greylisting Buffer Overflow
+| [6472] Postfix < 2.4.9, 2.5.5, 2.6-20080902 - (.forward) Local DoS Exploit
+| [6337] Postfix <= 2.6-20080814 - (symlink) Local Privilege Escalation Exploit
+| [934] gld 1.4 (Postfix Greylisting Daemon) Remote Format String Exploit
+| 
+| OpenVAS (Nessus) - http://www.openvas.org:
+| [902517] Postfix SMTP Server Cyrus SASL Support Memory Corruption Vulnerability
+| [881389] CentOS Update for postfix CESA-2011:0422 centos5 x86_64
+| [881293] CentOS Update for postfix CESA-2011:0843 centos4 x86_64
+| [881278] CentOS Update for postfix CESA-2011:0422 centos4 x86_64
+| [881267] CentOS Update for postfix CESA-2011:0843 centos5 x86_64
+| [880520] CentOS Update for postfix CESA-2011:0422 centos5 i386
+| [880509] CentOS Update for postfix CESA-2011:0843 centos5 i386
+| [880488] CentOS Update for postfix CESA-2011:0843 centos4 i386
+| [880485] CentOS Update for postfix CESA-2011:0422 centos4 i386
+| [880268] CentOS Update for postfix CESA-2008:0839 centos3 i386
+| [880023] CentOS Update for postfix CESA-2008:0839 centos3 x86_64
+| [870658] RedHat Update for postfix RHSA-2011:0423-01
+| [870440] RedHat Update for postfix RHSA-2011:0843-01
+| [870418] RedHat Update for postfix RHSA-2011:0422-01
+| [870021] RedHat Update for postfix RHSA-2008:0839-01
+| [863100] Fedora Update for postfix FEDORA-2011-6777
+| [863097] Fedora Update for postfix FEDORA-2011-6771
+| [862950] Fedora Update for postfix FEDORA-2011-3394
+| [862938] Fedora Update for postfix FEDORA-2011-3355
+| [860510] Fedora Update for postfix FEDORA-2008-8593
+| [860419] Fedora Update for postfix FEDORA-2008-8595
+| [850126] SuSE Update for postfix SUSE-SA:2010:011
+| [850031] SuSE Update for postfix SUSE-SA:2008:040
+| [840658] Ubuntu Update for postfix USN-1131-1
+| [840648] Ubuntu Update for postfix USN-1113-1
+| [840227] Ubuntu Update for postfix vulnerabilities USN-642-1
+| [840190] Ubuntu Update for postfix vulnerability USN-636-1
+| [831400] Mandriva Update for postfix MDVSA-2011:090 (postfix)
+| [830713] Mandriva Update for postfix MDVSA-2008:171 (postfix)
+| [830635] Mandriva Update for postfix MDVSA-2008:190 (postfix)
+| [830075] Mandriva Update for postfix MDKA-2007:079 (postfix)
+| [72452] Gentoo Security Advisory GLSA 201209-18 (postfixadmin)
+| [71559] Gentoo Security Advisory GLSA 201206-33 (Postfix)
+| [70744] FreeBSD Ports: postfixadmin
+| [69770] FreeBSD Ports: postfix, postfix-base
+| [69733] Debian Security Advisory DSA 2233-1 (postfix)
+| [69363] FreeBSD Ports: postfix, postfix-base
+| [66394] Mandriva Security Advisory MDVSA-2009:224-1 (postfix)
+| [65957] SLES10: Security update for Postfix
+| [65911] SLES10: Security update for Postfix
+| [65353] SLES9: Security update for Postfix
+| [65350] SLES9: Security update for postfix
+| [64696] Mandrake Security Advisory MDVSA-2009:224 (postfix)
+| [61646] Gentoo Security Advisory GLSA 200809-09 (postfix)
+| [61445] Gentoo Security Advisory GLSA 200808-12 (postfix)
+| [61435] Debian Security Advisory DSA 1629-2 (postfix)
+| [61434] Debian Security Advisory DSA 1629-1 (postfix)
+| [60836] FreeBSD Ports: postfix-policyd-weight
+| [58580] Debian Security Advisory DSA 1361-1 (postfix-policyd)
+| [53833] Debian Security Advisory DSA 093-1 (postfix)
+| [53652] Debian Security Advisory DSA 363-1 (postfix)
+| 
+| SecurityTracker - https://www.securitytracker.com:
+| [1025521] Postfix SASL Authentication Heap Overflow Lets Remote Users Deny Service
+| [1025179] Postfix Plaintext to TLS Switching Error Lets Remote Users Inject Plaintext Commands
+| [1020800] Postfix Linux epoll File Descriptor Leak Lets Local Users Deny Service
+| [1020700] Postfix Symlink Dereference Bug Lets Local Users Gain Elevated Privileges
+| [1012395] Postfix CRAM-MD5 Replay Attack May Let Remote Users Send Mail
+| [1011532] Postfix Buffer Error May Prevent Remote Users from Being Able to Authenticate Using SMTPD AUTH
+| [1007382] Postfix Bounce Messages Let Remote Users Scan for Open Ports on Other Hosts
+| [1007381] Postfix Address Resolver Parsing Bug Lets Remote Users Hang the System
+| [1002756] Postfix Mail Server Can Be Crashed By Remote Users Initiating Unsuccessful Sessions
+| 
+| OSVDB - http://www.osvdb.org:
+| [94034] Linux Kernel Broadcom B43 Wireless Driver b43_request_firmware Function fwpostfix modprobe Parameter Format String Local Privilege Escalation
+| [78567] Postfix Admin backup.php Unspecified SQL Injection
+| [78566] Postfix Admin functions.inc.php pacrypt() Function Unspecified SQL Injection
+| [78565] Postfix Admin create-domain.php Unspecified SQL Injection
+| [78564] Postfix Admin Unspecified XSS
+| [78563] Postfix Admin edit-alias.php Unspecified XSS
+| [78562] Postfix Admin create-alias.php Unspecified XSS
+| [78561] Postfix Admin create-domain.php Unspecified XSS
+| [78560] Postfix Admin templates/edit-vacation.php domain Parameter XSS
+| [78559] Postfix Admin templates/menu.php domain Parameter XSS
+| [72259] Postfix SMTP Cyrus SASL Authentication Context Data Reuse Memory Corruption
+| [71021] Postfix STARTTLS Arbitrary Plaintext Command Injection
+| [68340] Artica postfix.events.php Unrestricted Access Information Disclosure
+| [61983] SUSE Linux postfix Network Interface Remote Access Restriction Bypass
+| [58325] Debian GNU/Linux postfix postfix.postinst Symlink Arbitrary File Overwrite
+| [49634] Postfix postfix_groups.pl Multiple Temporary File Symlink Arbitrary File Overwrite
+| [48973] Apple Mac OS X Postfix Network Access Configuration Weakness
+| [48108] Postfix epoll File Descriptor Leak Local DoS
+| [47659] Postfix Cross-user Filename Local Mail Interception
+| [47658] Postfix Hardlink to Symlink Mailspool Arbitrary Content Append
+| [43888] policyd-weight for Postfix Socket Handling Unspecified Arbitrary File Manipulation
+| [38091] policyd for Postfix sockets.c read_w() Function SMTP Command Remote Overflow
+| [22381] Kolab Server Secure SMTP postfix.log Authentication Credential Disclosure
+| [13470] Postfix IPv6 Patch if_inet6 Failure Arbitrary Mail Relay
+| [12339] SQLgrey Postfix greylisting service Unspecified SQL Injection
+| [12200] Apple Mac OS X Postfix CRAM-MD5 Replay Credentials
+| [11571] SQLgrey Postfix greylisting Email Address SQL Injection
+| [10545] Postfix Multiple Mail Header SMTP listener DoS
+| [10544] Postfix Malformed Envelope Address nqmgr DoS
+| [10500] Apple Mac OS X Postfix SMTPD AUTH Username Overflow DoS
+| [6551] Postfix Bounce Scan / Packet Amplification DDoS
+| [1991] Postfix SMTP Log DoS
+|_
+MAC Address: 98:83:89:CA:08:80 (Samsung Electronics)
+No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
+TCP/IP fingerprint:
+OS:SCAN(V=7.60%E=4%D=6/18%OT=25%CT=1%CU=33937%PV=Y%DS=1%DC=D%G=Y%M=988389%T
+OS:M=5EEB68EA%P=x86_64-pc-linux-gnu)SEQ(SP=104%GCD=1%ISR=10C%TI=Z%CI=Z%TS=A
+OS:)SEQ(SP=104%GCD=1%ISR=10C%TI=Z%CI=Z%II=I%TS=A)OPS(O1=M5B4ST11NW7%O2=M5B4
+OS:ST11NW7%O3=M5B4NNT11NW7%O4=M5B4ST11NW7%O5=M5B4ST11NW7%O6=M5B4ST11)WIN(W1
+OS:=FE88%W2=FE88%W3=FE88%W4=FE88%W5=FE88%W6=FE88)ECN(R=Y%DF=Y%T=40%W=FAF0%O
+OS:=M5B4NNSNW7%CC=Y%Q=)T1(R=Y%DF=Y%T=40%S=O%A=S+%F=AS%RD=0%Q=)T2(R=N)T3(R=N
+OS:)T4(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T5(R=Y%DF=Y%T=40%W=0%S=Z%A=
+OS:S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T7(R=Y%DF
+OS:=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R=Y%DF=N%T=40%IPL=164%UN=0%RIPL=
+OS:G%RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=N%T=40%CD=S)
+
+Network Distance: 1 hop
+Service Info: Host:  sabrina-340XAA-350XAA-550XAA
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   2.35 ms 192.168.0.28
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Thu Jun 18 10:15:22 2020 -- 1 IP address (1 host up) scanned in 18.59 seconds

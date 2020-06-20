@@ -134,7 +134,7 @@ int main(int argc, char const *argv[])
 
         std::vector<int> prefs_choice;
         int choice;
-        for (int i = 0; i < n_choices; i++)
+        for (int k = 0; k < n_choices; k++)
         {
             std::cin >> choice;
             prefs_choice.push_back(choice);
@@ -143,9 +143,9 @@ int main(int argc, char const *argv[])
 
         for (int j = 0; j < n_choices; j++)
         {
-            int intex = (i * n_alunos + prefs_choice[j]); //+ //prefs_choice[j];
-            //std::cout << intex << " " << prefs.size() <<std::endl;
-            prefs[intex] = pow(n_choices - j, 2);
+            int intex = (j * n_alunos + prefs_choice[j]); //+ //prefs_choice[j];
+            //std::cout << intex << " " << prefs.size() << " " <<n_alunos*n_projetos << std::endl;
+            prefs[0] = pow(n_choices - j, 2);
         }
     }
     
@@ -167,7 +167,7 @@ int main(int argc, char const *argv[])
 
     thrust::device_vector<int> d_vec = A;
     thrust::device_vector<int> st = A;
-    int initila = 0;
+    //int initila = 0;
     //for (int i = initila; i < initila +9; i++)
     //{
     //    std::cout << A[i] << "\n";
@@ -208,7 +208,7 @@ int main(int argc, char const *argv[])
     {
         std::cout << santax2[indexx*n_alunos + i] << " ";
     }
-    std::cout << santax2[indexx*n_alunos + n_alunos];
+    std::cout << santax2[indexx*n_alunos + n_alunos] << "\n";
 
     /*for (int i = initila; i < initila +9; i++)
     {

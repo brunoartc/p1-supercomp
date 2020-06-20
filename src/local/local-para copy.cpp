@@ -86,10 +86,6 @@ void random_alunos_dist(std::vector<int> &aluno_projeto, std::vector<int> vagas)
 }
 
 
-int myrandom (int i) { return std::rand()%i;}
-
-
-
 void random_alunos_dist_full(std::vector<int> &aluno_projeto, std::vector<int> vagas)
 {
     int i = 0;
@@ -113,11 +109,6 @@ void random_alunos_dist_full(std::vector<int> &aluno_projeto, std::vector<int> v
 int main(int argc, char const *argv[])
 {
 
-    if(getenv("SEED")) {
-    srand(atoi(getenv("SEED")));
-    } else {
-        srand(0);
-    }
 
     int n_alunos, n_projetos, n_choices;
     
@@ -145,15 +136,72 @@ int main(int argc, char const *argv[])
         for (int j = 0; j < n_choices; j++)
         {
             prefs[i][prefs_choice[j]] = pow(n_choices - j, 2);
+            //std::cout << i << j << prefs[i][prefs_choice[j]];
         }
     }
 
+
+
     std::vector<int> vagas(n_projetos, 3); // start with value of n_choices
+
+    
+
+    int iters;
+    if(getenv("ITER")) {
+        iters = atoi(getenv("ITER"));
+    } else {
+        iters = 100000;
+    }
+    if(getenv("SEED")) {
+        srand(atoi(getenv("SEED")));
+    } else {
+        srand(0);
+    }
+
 
     std::vector<int> aluno_projeto; // start with value of -1 nao ASSIM EH ERRADO
 
 
+    //std::cout << prefs.size() << std::endl;
     for (int i = 0; i < n_projetos; i++) {
+        for (int j = 0; j < 3; j++){
+            aluno_projeto.push_back(i);
+        }
+    }
+    //std::cout << std::endl;
+    
+
+    std::random_shuffle ( aluno_projeto.begin(), aluno_projeto.end() );
+
+    
+    int soma = 0;
+    for(int p = 0; p < prefs.size(); p++){
+        soma += prefs[p][aluno_projeto[p]];
+    }
+    melhor_obj melhor_global;
+    melhor_global.satisfacao_atual = soma;
+    melhor_global.melhor = aluno_projeto;
+
+    //std::cout <<"MAMA" <<soma << "MIA";
+
+    #pragma omp parallel for
+    for (int i = 0; i < iters; i++){
+        melhor_obj atual_obj;
+        std::random_shuffle ( aluno_projeto.begin(), aluno_projeto.end() );
+        atual_obj = local(prefs, aluno_projeto, vagas, melhor_global);
+        if (atual_obj.satisfacao_atual > melhor_global.satisfacao_atual){
+            //#pragma critical
+            melhor_global.satisfacao_atual = atual_obj.satisfacao_atual;
+            for(int j = 0; j < melhor_global.melhor.size(); j++)
+                {
+                    //#pragma critical
+                    melhor_global.melhor[j] = melhor_global.melhor[j];
+                }
+        }
+    }
+
+
+    /*for (int i = 0; i < n_projetos; i++) {
         for (int j = 0; j < 3; j++){
             aluno_projeto.push_back(i);
         }
@@ -172,34 +220,58 @@ int main(int argc, char const *argv[])
     std::vector<int> aluno_projet = aluno_projeto;
 
     melhor_obj melhor_global;
-    melhor_global.satisfacao_atual = 0;
+    
+    int agora = 0;
+    for (int i = 0; i < n_alunos; i++)
+    {
+        agora += prefs[i][aluno_projet[i]];
+        
+    }
+    melhor_global.satisfacao_atual = agora;
     melhor_global.melhor = aluno_projet;
     std::vector<int> vagas_g(vagas);
     //srand(time(NULL));
-    #pragma omp parallel for
+    /*#pragma omp parallel for
     for (int i = 0; i < iters; i++)
     {
 
         //random_alunos_dist(aluno_projet, vagas_g);
         melhor_obj current_best;
-        //random_alunos_dist(aluno_projet, vagas_g);
-        
         current_best = local(prefs, aluno_projet, vagas, melhor_global);
         int agora = current_best.satisfacao_atual;
         melhor_obj atual_obj;
-        std::random_shuffle ( aluno_projet.begin(), aluno_projet.end());
-        
+        std::random_shuffle ( aluno_projet.begin(), aluno_projet.end() );
         atual_obj = local(prefs, aluno_projet, vagas, melhor_global);
         if (atual_obj.satisfacao_atual > melhor_global.satisfacao_atual){
             //#pragma critical
             melhor_global.satisfacao_atual = atual_obj.satisfacao_atual;
-            melhor_global.melhor = atual_obj.melhor;
+            std::vector<int> new_(atual_obj.melhor);
+            melhor_global.melhor = new_;
         }
 
     }
+
+    #pragma omp parallel for
+    for (int i = 0; i < iters; i++){
+        melhor_obj atual_obj;
+        std::random_shuffle ( aluno_projet.begin(), aluno_projet.end() );
+        atual_obj = local(prefs, aluno_projet, vagas, melhor_global);
+        if (atual_obj.satisfacao_atual > melhor_global.satisfacao_atual){
+            //#pragma critical
+            melhor_global.satisfacao_atual = atual_obj.satisfacao_atual;
+            std::vector<int> new_(atual_obj.melhor);
+            melhor_global.melhor = new_;
+        }
+    }*/
     
 
-   std::cout << melhor_global.satisfacao_atual  << " 1" << "\n";
+   /*std::cout << melhor_global.satisfacao_atual << " 1" << "\n";
+    for (int i = 0; i < melhor_global.melhor.size()-1; i++)
+    {
+        std::cout << melhor_global.melhor[i] << " ";
+    }
+    std::cout << melhor_global.melhor[melhor_global.melhor.size()] << "\n";*/
+    std::cout << melhor_global.satisfacao_atual  << " 1" << "\n";
     for (int i = 0; i < melhor_global.melhor.size(); i++){
         std::cout << melhor_global.melhor[i] << " ";
     }
